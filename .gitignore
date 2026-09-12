@@ -1,0 +1,25 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*.class
+*.egg-info/
+
+# Testing & linting
+.pytest_cache/
+.coverage
+
+# Environments
+.venv/
+venv/
+
+# Large datasets & parquet outputs
+*.parquet
+*.csv.gz
+*.tar.gz
+*.zip
+output/*.parquet
+output/**/*.parquet
+
+# Keep summary and log files
+!output/run_summary.json
+!output/results_log.csv
