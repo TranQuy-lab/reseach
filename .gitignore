@@ -11,15 +11,22 @@ __pycache__/
 # Environments
 .venv/
 venv/
+.tmp*
 
-# Large datasets & parquet outputs
-*.parquet
+# Raw outputs & large files
 *.csv.gz
 *.tar.gz
 *.zip
 output/*.parquet
 output/**/*.parquet
+gnn_data/*.parquet
+gnn_data/**/*.parquet
 
-# Keep summary and log files
+# Keep summaries
 !output/run_summary.json
 !output/results_log.csv
+!gnn_data/experiment_results_500k.json
+
+# Whitelist processed datasets for Git
+!data/ml_processed/*.parquet
+!data/dl_processed/*.parquet
