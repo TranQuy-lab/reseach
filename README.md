@@ -1,24 +1,5 @@
 # NF-UQ-NIDS-v2 Preprocessing Pipeline (Person A's stage)
 
-> **Phạm vi chính đã chốt (2026-09-20):** chạy riêng bốn bộ **v2** của
-> NF-UQ-NIDS-v2. Đọc [tài liệu chính và hướng dẫn chuẩn bị dữ liệu](research/RESEARCH_PLAN_VI.md).
-> Đã tải raw CSV và [xuất bốn file giữ IP/port](research/PREPROCESSING_FOUR_VI.md).
-> Benchmark mini-batch 72 run đã hoàn tất: xem
-> [báo cáo kết quả](research/MINIBATCH_REPORT_VI.md),
-> [protocol](research/PROTOCOL_MINIBATCH_VI.md) và
-> [hướng dẫn chạy lại](research/MINIBATCH_RUNBOOK_VI.md).
-> Để chuyển sang máy chủ, dùng [gói server](research/server/README_SERVER_VI.md).
-> Ba notebook `10_FULL_*`–`12_FULL_*` là pipeline kết quả chính trên toàn bộ
-> 75.987.976 flow; năm notebook `00`–`04` chỉ giữ benchmark pilot lịch sử.
-> Pilot dưới đây chỉ dùng Parquet NF-ToN-IoT-v2 lịch sử.
-
-> **Khởi động lại nghiên cứu (2026-09-19):** xem
-> [hướng dẫn chạy pilot](research/RUNBOOK_VI.md) và
-> [protocol đã chốt trước thí nghiệm](research/PROTOCOL.md).
-> Nhánh mới ở `src/nids_research/`, độc lập với các script cũ.
-> README phía dưới mô tả **nhánh tiền xử lý dữ liệu bảng**, không phải
-> toàn bộ quy trình E-GraphSAGE. Kết quả/báo cáo cũ chưa được tái xác nhận.
-
 This is a working, tested re-implementation of the team's reference cleaning
 notebook (`NF-UQ-NIDS-V2-00-Cleaning`, Kaggle), turned into modular,
 documented, reusable code, plus a stratified train/val/test split stage so
