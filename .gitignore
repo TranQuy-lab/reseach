@@ -11,6 +11,11 @@ __pycache__/
 # Environments
 .venv/
 venv/
+.venv-research/
+.venv-minibatch/
+.venv-server/
+.matplotlib-cache/
+research/artifacts/
 .tmp*
 
 # Raw outputs & large files
@@ -30,3 +35,8 @@ gnn_data/**/*.parquet
 # Whitelist processed datasets for Git
 !data/ml_processed/*.parquet
 !data/dl_processed/*.parquet
+
+/data/raw/
+
+/data/processed_four/
+/data/minibatch_splits/
