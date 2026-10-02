@@ -298,10 +298,12 @@ def main():
     df_cm_anomale.to_csv(os.path.join(OUTPUT_DIR, "confusion_matrix_anomale.csv"))
 
     # Plot 4: Anomal-E Confusion Matrix
+    atk_prec = cm_anomale[1, 1] / (cm_anomale[1, 1] + cm_anomale[0, 1]) * 100
+    acc_anomale = accuracy_score(y_val_bin_np, anomale_preds) * 100
     plt.figure(figsize=(7, 6))
     sns.heatmap(cm_anomale, annot=True, fmt="d", cmap="Greens", cbar=True,
                 xticklabels=["Pred Benign", "Pred Attack"], yticklabels=["True Benign", "True Attack"])
-    plt.title(f"Anomal-E Confusion Matrix (Unsupervised DGI)\nAccuracy: {accuracy_score(y_val_bin_np, anomale_preds)*100:.2f}% | Attack Precision: 75.72%", fontsize=13, pad=12)
+    plt.title(f"Anomal-E Confusion Matrix (Unsupervised DGI)\nAccuracy: {acc_anomale:.2f}% | Attack Precision: {atk_prec:.2f}% | ROC-AUC: {roc_auc_anomale:.4f}", fontsize=12, pad=12)
     plt.tight_layout()
     plt.savefig(os.path.join(PLOTS_DIR, "fig4_anomale_cm.png"), dpi=300)
     plt.close()
@@ -321,6 +323,38 @@ def main():
     plt.tight_layout()
     plt.savefig(os.path.join(PLOTS_DIR, "fig5_anomale_roc_curve.png"), dpi=300)
     plt.close()
+
+    # Plot 7: Real Anomaly Score Empirical Distribution (KDE)
+    attack_scores = anomaly_scores[y_val_bin_np == 1]
+    np.random.seed(42)
+    sub_idx_b = np.random.choice(len(benign_scores), min(50000, len(benign_scores)), replace=False)
+    sub_idx_a = np.random.choice(len(attack_scores), min(50000, len(attack_scores)), replace=False)
+    plt.figure(figsize=(10, 5))
+    sns.kdeplot(benign_scores[sub_idx_b], label=f"Benign Flows (n={len(sub_idx_b):,})", color="#2ca02c", fill=True, alpha=0.35, linewidth=2)
+    sns.kdeplot(attack_scores[sub_idx_a], label=f"Attack Flows (n={len(sub_idx_a):,})", color="#d62728", fill=True, alpha=0.35, linewidth=2)
+    plt.axvline(threshold_anomale, color="black", linestyle="--", linewidth=2, label=f"95% Benign Threshold ({threshold_anomale:.4f})")
+    plt.title(f"Empirical Anomaly Score Distribution (Real Model Output)\nROC-AUC: {roc_auc_anomale:.4f} | FAR: 5.00% | Attack Precision: {atk_prec:.2f}%", fontsize=12, fontweight="bold")
+    plt.xlabel("Anomaly Score (- Bilinear Discriminator Logit)", fontsize=11)
+    plt.ylabel("Probability Density", fontsize=11)
+    plt.legend(loc="upper right", fontsize=10)
+    plt.tight_layout()
+    plt.savefig(os.path.join(PLOTS_DIR, "fig7_anomale_real_kde.png"), dpi=300)
+    plt.close()
+
+    # Save real output arrays for notebook live evaluation
+    print("=== Lưu trữ các mảng dự đoán thực tế cho Notebook ===")
+    np.save(os.path.join(OUTPUT_DIR, "y_val_multi.npy"), y_val_multi_np)
+    np.save(os.path.join(OUTPUT_DIR, "val_preds_egraphsage.npy"), val_preds)
+    np.save(os.path.join(OUTPUT_DIR, "val_probs_egraphsage.npy"), val_probs)
+    np.save(os.path.join(OUTPUT_DIR, "y_val_bin.npy"), y_val_bin_np)
+    np.save(os.path.join(OUTPUT_DIR, "anomale_val_scores.npy"), anomaly_scores.astype(np.float32))
+    np.savez_compressed(
+        os.path.join(OUTPUT_DIR, "anomale_val_scores_sample100k.npz"),
+        benign_sample=benign_scores[sub_idx_b].astype(np.float32),
+        attack_sample=attack_scores[sub_idx_a].astype(np.float32),
+        threshold=float(threshold_anomale),
+        roc_auc=float(roc_auc_anomale)
+    )
 
     # -------------------------------------------------------------
     # 6. Comparative Bar Charts: Paper vs Ours
